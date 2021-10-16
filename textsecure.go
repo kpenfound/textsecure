@@ -630,6 +630,21 @@ func handleReceivedMessage(msg []byte) error {
 
 		fmt.Println(str) // uint64 in string format
 
+		wm, err := axolotl.LoadWhisperMessage(msg)
+		if err != nil {
+			log.Infof("[textsecure] Incoming WhisperMessage %s.\n", err)
+			log.Debug("[textsecure] Failed to load message 636")
+		}
+		b, err := sc.SessionDecryptWhisperMessage(wm)
+		if _, ok := err.(axolotl.DuplicateMessageError); ok {
+			log.Infof("[textsecure] Incoming WhisperMessage %s. Ignoring.\n", err)
+			log.Debug("[textsecure] Failed to decrypt message 641")
+		}
+		err = handleMessage(env.GetSourceE164(), env.GetSourceUuid(), env.GetTimestamp(), b)
+		if err != nil {
+			log.Debug("[textsecure] Failed to handle message 645")
+		}
+
 		return fmt.Errorf("not implemented message type unindentified sender %v", msg)
 
 	default:
