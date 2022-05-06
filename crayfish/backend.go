@@ -313,7 +313,7 @@ func (c *Conn) writeWorker() {
 				return
 			}
 
-			log.Debugf("[textsecure-crayfish-ws] websocket sending message")
+			log.Debugf("[textsecure-crayfish-ws] websocket sending message: %+v", message)
 			if err := c.write(websocket.TextMessage, message); err != nil {
 				log.WithFields(log.Fields{
 					"error": err,
